@@ -1,0 +1,109 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Test",
+   LoadingTitle = "Test",
+   LoadingSubtitle = "by Swayzy",
+   ConfigurationSaving = {
+      Enabled = false,
+      FolderName = nil, -- Create a custom folder for your hub/game
+      FileName = "Big Hub"
+   },
+   Discord = {
+      Enabled = false,
+      Invite = "nil", -- The Discord invite code
+      RememberJoins = false -- Set this to false to make them join the discord every time they load it up
+   },
+   KeySystem = true, -- Set this to true to use our key system
+   KeySettings = {
+      Title = "Key",
+      Subtitle = "Key System",
+      Note = "Join the discord to get access",
+      FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
+      SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
+      GrabKeyFromSite = true, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+      Key = {"Swayzy."} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+   }
+})
+
+Rayfield:Notify({
+   Title = "You executed the script",
+   Content = "Test",
+   Duration = 3,
+   Image = nil,
+   Actions = { -- Notification Buttons
+      Ignore = {
+         Name = "Okay!",
+         Callback = function()
+            print("The user tapped Okay!")
+         end
+      }
+   },
+})
+
+local MainTab = Window:CreateTab("Farming", nil) -- Title, Image
+local MainSection = MainTab:CreateSection("Main")
+
+-- Global state variables to manage tapping and rebirthing
+local autoTap = false
+local autoRebirth = false
+local DELAY = 0.25
+
+-- Function to handle auto-tapping logic
+local function autoTapFunction()
+    task.spawn(function()
+        while autoTap do
+            local ohNumber1 = math.huge
+
+            game:GetService("ReplicatedStorage").Packages._Index["sleitnick_knit@1.7.0"].knit.Services.CoinService.RE.CoinCollected:FireServer(ohNumber1)
+            task.wait(DELAY)
+        end
+    end)
+end
+
+-- Function to handle rebirthing logic
+local function autoRebirthFunction()
+    task.spawn(function()
+        while autoRebirth do
+            local ohNumber1 = math.huge
+            game:GetService("ReplicatedStorage").Packages._Index["sleitnick_knit@1.7.0"].knit.Services.PersonalBestService.RE.SetPersonalBest:FireServer(ohNumber1)
+            task.wait(DELAY)
+        end
+    end)
+end
+
+-- Create the auto-click toggle
+local ToggleClick = MainTab:CreateToggle({
+   Name = "Max Coins",
+   CurrentValue = false,
+   Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(value)
+      -- If toggle is turned on, start auto-tapping
+      autoTap = value
+      if value then
+          autoTapFunction()
+      end
+      -- If toggle is turned off, stop auto-tapping
+      if not value then
+          autoTap = false
+      end
+   end,
+})
+
+-- Create the rebirth toggle
+local ToggleRebirth = MainTab:CreateToggle({
+   Name = "Max Height",
+   CurrentValue = false,
+   Flag = "Toggle2", -- A flag for this toggle
+   Callback = function(value)
+      -- If toggle is turned on, start rebirthing
+      autoRebirth = value
+      if value then
+          autoRebirthFunction()
+      end
+      -- If toggle is turned off, stop rebirthing
+      if not value then
+          autoRebirth = false
+      end
+   end,
+})
