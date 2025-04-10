@@ -47,15 +47,23 @@ local MainSection = MainTab:CreateSection("Main")
 -- Global state variables to manage tapping and rebirthing
 local autoTap = false
 local autoRebirth = false
-local DELAY = 0.25
+
+local DELAY = 0.1  -- Adjusted for better performance
 
 -- Function to handle auto-tapping logic
 local function autoTapFunction()
     task.spawn(function()
         while autoTap do
-            local ohNumber1 = math.huge
-
-            game:GetService("ReplicatedStorage").Packages._Index["sleitnick_knit@1.7.0"].knit.Services.CoinService.RE.CoinCollected:FireServer(ohNumber1)
+            local success, error = pcall(function()
+                local args = {
+                    [1] = 999999
+                }
+                
+                local coinService = game:GetService("ReplicatedStorage").Packages._Index["sleitnick_knit@1.7.0"].knit.Services.CoinService
+                if coinService and coinService.RE and coinService.RE.CoinCollected then
+                    coinService.RE.CoinCollected:FireServer(unpack(args))
+                end
+            end)
             task.wait(DELAY)
         end
     end)
@@ -65,12 +73,21 @@ end
 local function autoRebirthFunction()
     task.spawn(function()
         while autoRebirth do
-            local ohNumber1 = math.huge
-            game:GetService("ReplicatedStorage").Packages._Index["sleitnick_knit@1.7.0"].knit.Services.PersonalBestService.RE.SetPersonalBest:FireServer(ohNumber1)
+            local success, error = pcall(function()
+                local args = {
+                    [1] = 999999
+                }
+                
+                local bestService = game:GetService("ReplicatedStorage").Packages._Index["sleitnick_knit@1.7.0"].knit.Services.PersonalBestService
+                if bestService and bestService.RE and bestService.RE.SetPersonalBest then
+                    bestService.RE.SetPersonalBest:FireServer(unpack(args))
+                end
+            end)
             task.wait(DELAY)
         end
     end)
 end
+
 
 -- Create the auto-click toggle
 local ToggleClick = MainTab:CreateToggle({
